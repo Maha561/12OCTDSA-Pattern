@@ -1,0 +1,149 @@
+# DSA Pattern Practice – Day 2
+## How I Solved the Hollow Inverted Star Pattern
+
+**Date:** 12 October 2026
+
+### 1. I started with the part I already understood
+
+After completing Pattern 1, I moved to Pattern 2. This pattern looked more complicated because I had to print stars on both sides and increase the spaces in the middle.
+
+Instead of trying to solve the entire pattern at once, I decided to split the problem into smaller parts.
+
+I started with the left side.
+
+I used an outer loop that decreased `i` from `5` to `1` and an inner loop that moved `j` from `1` to `n * 2 - 1`.
+
+My first condition was:
+
+```java
+if (j <= i && j <= n) {
+    System.out.print("* ");
+}
+```
+
+This printed the decreasing left-side stars correctly.
+
+That was my first step: **I solved the part I understood before moving to the difficult part.**
+
+### 2. I focused on the middle spaces
+
+Once the left side was working, I needed to print spaces in the middle.
+
+I observed the pattern and identified the number of middle spaces in each row:
+
+| Row | Middle spaces |
+|---:|---:|
+| 1 | 0 |
+| 2 | 1 |
+| 3 | 3 |
+| 4 | 5 |
+| 5 | 7 |
+
+At first, I thought about using a variable `k` to track the spaces. I tried different initial values and update conditions, but I realised that simply counting spaces was not enough. I also needed to know **where those spaces should appear**.
+
+That helped me change my approach.
+
+### 3. I changed my thinking from counting spaces to finding positions
+
+I asked myself: where do the middle spaces begin?
+
+Because the left-side stars end at column `i`, the middle spaces should begin at:
+
+```java
+i + 1
+```
+
+Then I needed to calculate where those spaces should end.
+
+My pattern had a total width of:
+
+```java
+n * 2 - 1
+```
+
+For `n = 5`, that meant nine positions.
+
+I used the total width and the current row number to calculate the ending column:
+
+```java
+n * 2 - 1 - i
+```
+
+This gave me the ending positions I needed:
+
+- When `i = 5`, the ending position was `4`.
+- When `i = 4`, it was `5`.
+- When `i = 3`, it was `6`.
+- When `i = 2`, it was `7`.
+- When `i = 1`, it was `8`.
+
+Now I had both boundaries: the starting position and the ending position.
+
+### 4. I combined the conditions
+
+I used both boundaries in my `else if` condition:
+
+```java
+else if (j >= (i + 1) && j <= (n * 2 - 1 - i)) {
+    System.out.print("  ");
+}
+```
+
+The logic became:
+
+- If `j <= i`, print a left-side star.
+- Otherwise, if `j` is between the calculated boundaries, print a middle space.
+- Otherwise, print a right-side star.
+
+I used an `if – else if – else` chain because I wanted only one of these three actions to happen for each column position.
+
+### 5. My final working code
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        int n = 5;
+
+        for (int i = 5; i >= 1; i--) {
+            for (int j = 1; j <= n * 2 - 1; j++) {
+
+                if (j <= i && j <= n) {
+                    System.out.print("* ");
+                }
+                else if (j >= (i + 1) && j <= (n * 2 - 1 - i)) {
+                    System.out.print("  ");
+                }
+                else {
+                    System.out.print("* ");
+                }
+            }
+
+            System.out.println();
+        }
+    }
+}
+```
+
+### 6. The output
+
+```text
+* * * * * * * * *
+* * * *   * * * *
+* * *       * * *
+* *           * *
+*               *
+```
+
+### 7. What I learned
+
+This pattern taught me that solving a problem does not always mean finding the complete formula immediately.
+
+I first solved the left-side stars. Then I observed the middle spaces, tried to understand their positions, and used the total width of the pattern to calculate their boundaries.
+
+I also learned why an `if – else if – else` structure was useful: it helped me decide what to print at each column without accidentally printing twice.
+
+**My biggest takeaway:** When counting becomes confusing, I can switch to thinking in terms of positions.
+
+I didn't solve this pattern in one attempt. I questioned my logic, tested ideas, corrected mistakes, and kept working until the output matched the pattern.
+
+That's how I'm learning DSA—not by memorising code, but by understanding how each condition works.
